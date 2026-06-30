@@ -2,7 +2,7 @@
 
 A web app that computes 9 key financial ratios from a company's income statement and balance sheet — with color-coded verdicts, charts, and plain-English insights.
 
-**Live demo:** [yourusername.github.io/financial-ratio-analyzer](https://lystonmcnear.github.io/financial-ratio-analyzer)
+**Live demo:** [lystonmcnear.github.io/financial-ratio-analyzer](https://lystonmcnear.github.io/financial-ratio-analyzer)
 
 ## What it analyzes
 
