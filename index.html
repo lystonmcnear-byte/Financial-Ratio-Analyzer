@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Financial Ratio Analyzer</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <div class="logo">
+        <span class="logo-icon">&#9650;</span>
+        <span class="logo-text">FinRatio</span>
+      </div>
+      <nav class="site-nav">
+        <a href="#analyzer">Analyzer</a>
+        <a href="#about">About</a>
+        <a href="https://github.com" target="_blank" rel="noopener">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <div class="hero-eyebrow">Financial analysis tool</div>
+      <h1 class="hero-title">Understand company health<br /><span class="accent">in seconds</span></h1>
+      <p class="hero-sub">Enter any company's financial statements and instantly compute 9 key ratios across liquidity, profitability, and leverage — with plain-English insights.</p>
+      <a href="#analyzer" class="btn-primary">Start analyzing &darr;</a>
+    </div>
+  </section>
+
+  <main id="analyzer" class="container section">
+    <h2 class="section-title">Enter financials</h2>
+    <p class="section-sub">Fill in the fields below, or load a sample company to see the tool in action.</p>
+
+    <div class="input-grid">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-icon">&#128202;</span>
+          <h3>Income statement</h3>
+        </div>
+        <div class="field">
+          <label for="revenue">Revenue ($)</label>
+          <input type="number" id="revenue" placeholder="e.g. 5,000,000" />
+        </div>
+        <div class="field">
+          <label for="cogs">Cost of goods sold ($)</label>
+          <input type="number" id="cogs" placeholder="e.g. 2,000,000" />
+        </div>
+        <div class="field">
+          <label for="opex">Operating expenses ($)</label>
+          <input type="number" id="opex" placeholder="e.g. 1,000,000" />
+        </div>
+        <div class="field">
+          <label for="interest">Interest expense ($)</label>
+          <input type="number" id="interest" placeholder="e.g. 100,000" />
+        </div>
+        <div class="field">
+          <label for="netIncome">Net income ($)</label>
+          <input type="number" id="netIncome" placeholder="e.g. 800,000" />
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-icon">&#9878;</span>
+          <h3>Balance sheet</h3>
+        </div>
+        <div class="field">
+          <label for="currAssets">Current assets ($)</label>
+          <input type="number" id="currAssets" placeholder="e.g. 3,000,000" />
+        </div>
+        <div class="field">
+          <label for="inventory">Inventory ($)</label>
+          <input type="number" id="inventory" placeholder="e.g. 500,000" />
+        </div>
+        <div class="field">
+          <label for="currLiab">Current liabilities ($)</label>
+          <input type="number" id="currLiab" placeholder="e.g. 1,500,000" />
+        </div>
+        <div class="field">
+          <label for="totalDebt">Total debt ($)</label>
+          <input type="number" id="totalDebt" placeholder="e.g. 2,000,000" />
+        </div>
+        <div class="field">
+          <label for="equity">Total equity ($)</label>
+          <input type="number" id="equity" placeholder="e.g. 4,000,000" />
+        </div>
+        <div class="field">
+          <label for="totalAssets">Total assets ($)</label>
+          <input type="number" id="totalAssets" placeholder="e.g. 7,000,000" />
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-primary" onclick="analyze()">Analyze &rarr;</button>
+      <button class="btn-ghost" onclick="loadSample()">Load sample company</button>
+      <button class="btn-ghost" onclick="clearAll()">Clear</button>
+    </div>
+  </main>
+
+  <section id="results" class="container section hidden">
+    <h2 class="section-title">Results</h2>
+
+    <div class="kpi-row" id="kpiRow"></div>
+
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('ratios')">Ratio breakdown</button>
+      <button class="tab" onclick="switchTab('charts')">Charts</button>
+      <button class="tab" onclick="switchTab('insights')">Insights</button>
+    </div>
+
+    <div id="tab-ratios" class="tab-panel active">
+      <div class="ratio-grid" id="ratioGrid"></div>
+    </div>
+
+    <div id="tab-charts" class="tab-panel hidden">
+      <div class="chart-grid">
+        <div class="chart-card">
+          <h3>Income breakdown</h3>
+          <div class="legend" id="incomeLegend"></div>
+          <div class="chart-wrap" style="height:240px">
+            <canvas id="incomeChart" role="img" aria-label="Bar chart comparing revenue, COGS, operating expenses, and net income"></canvas>
+          </div>
+        </div>
+        <div class="chart-card">
+          <h3>Margin profile</h3>
+          <div class="chart-wrap" style="height:220px">
+            <canvas id="marginChart" role="img" aria-label="Bar chart of gross, operating, and net profit margins"></canvas>
+          </div>
+        </div>
+        <div class="chart-card">
+          <h3>Liquidity &amp; leverage</h3>
+          <div class="chart-wrap" style="height:220px">
+            <canvas id="liquChart" role="img" aria-label="Bar chart of current ratio, quick ratio, and debt-to-equity ratio"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-insights" class="tab-panel hidden">
+      <div class="insight-card" id="insightCard"></div>
+    </div>
+  </section>
+
+  <section id="about" class="about-section">
+    <div class="container">
+      <h2 class="section-title">What this analyzes</h2>
+      <div class="about-grid">
+        <div class="about-item">
+          <div class="about-num">01</div>
+          <h4>Liquidity</h4>
+          <p>Current ratio and quick ratio reveal whether a company can meet its short-term obligations without raising capital.</p>
+        </div>
+        <div class="about-item">
+          <div class="about-num">02</div>
+          <h4>Profitability</h4>
+          <p>Gross, operating, and net margins plus ROE and ROA show how efficiently the business converts revenue into profit.</p>
+        </div>
+        <div class="about-item">
+          <div class="about-num">03</div>
+          <h4>Leverage</h4>
+          <p>Debt-to-equity and interest coverage ratios assess how much the company relies on debt and its ability to service it.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container">
+      <span>Built with HTML, CSS &amp; JavaScript &mdash; no frameworks</span>
+      <span>Financial Ratio Analyzer &copy; 2025</span>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
